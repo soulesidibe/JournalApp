@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "427397649267",
+    "firebase_url": "https://journalapp-2018.firebaseio.com",
+    "project_id": "journalapp-2018",
+    "storage_bucket": "journalapp-2018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427397649267:android:8013f0546a3c39d1",
+        "android_client_info": {
+          "package_name": "com.soulesidibe.journalapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427397649267-9vph9kbl3ghnekckuk1qrcfq0q48avtl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_f8-51xIfROiukP25l9YGumLywXEVdHc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
