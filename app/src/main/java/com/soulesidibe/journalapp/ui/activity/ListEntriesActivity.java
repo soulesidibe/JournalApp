@@ -105,7 +105,12 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
 
     @Override
     public void onclick(Entry entry) {
-
+        Intent intent = new Intent(this, AddEditEntryActivity.class);
+        intent.putExtra("action", "show");
+        intent.putExtra("entry_title", entry.getTitle());
+        intent.putExtra("entry_content", entry.getContent());
+        intent.putExtra("entry_date", entry.getDate());
+        startActivity(intent);
     }
 
     private void initRecyclerView() {

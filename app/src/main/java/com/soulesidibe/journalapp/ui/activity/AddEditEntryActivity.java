@@ -6,9 +6,12 @@ import com.soulesidibe.journalapp.model.data.Entry;
 import com.soulesidibe.journalapp.viewmodel.AddEditViewModel;
 import com.soulesidibe.journalapp.viewmodel.ClockInt;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class AddEditEntryActivity extends AppCompatActivity {
 
@@ -18,17 +21,73 @@ public class AddEditEntryActivity extends AppCompatActivity {
 
     private EditText content;
 
+    private TextView tvTitle;
+
+    private TextView tvContent;
+
     private AddEditViewModel viewModel;
+
+    private Entry entry = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_entry);
-
         viewModel = Injector.providesAddEntryViewModel(this);
 
         title = findViewById(R.id.id_add_edit_edt_title);
         content = findViewById(R.id.id_add_edit_edt_content);
+        tvTitle = findViewById(R.id.id_add_edit_tv_title);
+        tvContent = findViewById(R.id.id_add_edit_tv_content);
+
+        tvContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForm();
+                if (entry != null) {
+                    title.setText(entry.getTitle());
+                    content.setText(entry.getContent());
+                }
+            }
+        });
+
+        tvTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForm();
+                if (entry != null) {
+                    title.setText(entry.getTitle());
+                    content.setText(entry.getContent());
+                }
+            }
+        });
+
+        Intent intent = getIntent();
+        String action = intent.getStringExtra("action");
+        if (action.equals("add")) {
+            showForm();
+        } else if (action.equals("show")) {
+            showEntry();
+            entry = new Entry(intent.getStringExtra("entry_title"),
+                    intent.getStringExtra("entry_content"), intent.getLongExtra("entry_date", 0));
+            tvTitle.setText(entry.getTitle());
+            tvContent.setText(entry.getContent());
+        }
+    }
+
+    private void showForm() {
+        title.setVisibility(View.VISIBLE);
+        content.setVisibility(View.VISIBLE);
+        tvTitle.setVisibility(View.INVISIBLE);
+        tvContent.setVisibility(View.INVISIBLE);
+    }
+
+    private void showEntry() {
+        title.setVisibility(View.INVISIBLE);
+        content.setVisibility(View.INVISIBLE);
+        tvTitle.setVisibility(View.VISIBLE);
+        tvContent.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -42,7 +101,12 @@ public class AddEditEntryActivity extends AppCompatActivity {
             return;
         }
 
-        Entry entry = new Entry(title, content, clock.currentTime());
-        viewModel.addEntry(entry);
+        if (this.entry == null) {
+            Entry entry = new Entry(title, content, clock.currentTime());
+            viewModel.addEntry(entry);
+        } else {
+            Entry entry = new Entry(title, content, this.entry.getDate());
+            viewModel.addEntry(entry);
+        }
     }
 }
