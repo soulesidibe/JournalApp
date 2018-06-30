@@ -20,7 +20,7 @@ public class UserPreferences implements UserPreferencesInt {
 
     @Override
     public boolean isLoggedIn() {
-        return true/*pref.getBoolean(IS_USER_LOGGED_IN, false)*/;
+        return pref.getBoolean(IS_USER_LOGGED_IN, false);
     }
 
     @Override

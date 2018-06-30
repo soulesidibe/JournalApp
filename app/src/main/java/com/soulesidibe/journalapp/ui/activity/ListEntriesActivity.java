@@ -46,6 +46,8 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
 
     private List<Entry> entries = new ArrayList<>();
 
+    private boolean isLoggedIn = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,12 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
         viewModel.getEntriesLiveData().observe(this, new Observer<Resource<List<Entry>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Entry>> listResource) {
+                if (!isLoggedIn) {
+                    showConnect();
+                    return;
+                }
                 if (listResource == null) {
+                    showEmpty();
                     return;
                 }
                 Resource.ResourceState state = listResource.getState();
@@ -79,7 +86,10 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
         });
 
         if (!userPreferences.isLoggedIn()) {
+            isLoggedIn = false;
             showConnect();
+        } else {
+            isLoggedIn = true;
         }
     }
 
