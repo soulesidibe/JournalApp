@@ -34,7 +34,7 @@
         android:ems="10"
         android:gravity="top"
         android:hint="@string/str_hint_add_edit_content"
-        android:inputType="textMultiLine|textCapWords"
+        android:inputType="textMultiLine|textCapSentences"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
