@@ -11,4 +11,7 @@ public interface UserPreferencesInt {
 
     void setLoggedIn(boolean value);
 
+    String getUserId();
+
+    void setUserId(String id);
 }

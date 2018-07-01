@@ -3,6 +3,9 @@ package com.soulesidibe.journalapp.model.data;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created on 6/27/18 at 11:09 AM
  * Project name : JournalApp
@@ -10,6 +13,12 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Entry {
+
+    public static final String ENTRY_TITLE = "title";
+
+    public static final String ENTRY_CONTENT = "content";
+
+    public static final String ENTRY_DATE = "date";
 
     private String title;
 
@@ -49,6 +58,14 @@ public class Entry {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(ENTRY_TITLE, title);
+        map.put(ENTRY_CONTENT, content);
+        map.put(ENTRY_DATE, date);
+        return map;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.soulesidibe.journalapp.viewmodel;
 
 import com.soulesidibe.journalapp.model.EntryRepositoryInt;
+import com.soulesidibe.journalapp.model.RemoteEntryDAOInt;
 import com.soulesidibe.journalapp.model.data.Entry;
 import com.soulesidibe.journalapp.model.data.Resource;
 import com.soulesidibe.journalapp.scheduler.BaseSchedulerProvider;
@@ -27,19 +28,41 @@ public class EntriesViewModel extends ViewModel {
 
     private EntryRepositoryInt repository;
 
+    private RemoteEntryDAOInt remoteEntryDAO;
+
     private BaseSchedulerProvider baseScheduler;
 
     private MutableLiveData<Resource<List<Entry>>> entriesLiveData = new MutableLiveData<>();
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
-    public EntriesViewModel(EntryRepositoryInt repository, BaseSchedulerProvider baseScheduler) {
+    public EntriesViewModel(EntryRepositoryInt repository, RemoteEntryDAOInt remoteEntryDAO,
+            BaseSchedulerProvider baseScheduler) {
         this.repository = repository;
+        this.remoteEntryDAO = remoteEntryDAO;
         this.baseScheduler = baseScheduler;
     }
 
     public LiveData<Resource<List<Entry>>> getEntriesLiveData() {
         return entriesLiveData;
+    }
+
+    public void sync() {
+        remoteEntryDAO.pull()
+                .observeOn(baseScheduler.ui())
+                .subscribeOn(baseScheduler.io())
+                .subscribe(new Consumer<List<Entry>>() {
+                    @Override
+                    public void accept(List<Entry> entries) throws Exception {
+                        repository.sync(entries);
+                        entriesLiveData.setValue(new Resource<>(SUCCESS, entries, ""));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
     }
 
     public void getEntries() {
@@ -56,6 +79,7 @@ public class EntriesViewModel extends ViewModel {
                             entriesLiveData.setValue(value);
                             return;
                         }
+
                         entriesLiveData.setValue(new Resource<>(SUCCESS, entries, ""));
                     }
                 }, new Consumer<Throwable>() {

@@ -1,6 +1,7 @@
 package com.soulesidibe.journalapp.viewmodel.factory;
 
 import com.soulesidibe.journalapp.model.EntryRepositoryInt;
+import com.soulesidibe.journalapp.model.RemoteEntryDAOInt;
 import com.soulesidibe.journalapp.scheduler.BaseSchedulerProvider;
 import com.soulesidibe.journalapp.viewmodel.EntriesViewModel;
 
@@ -19,15 +20,18 @@ public class EntriesViewModelFactory implements ViewModelProvider.Factory {
 
     private final BaseSchedulerProvider schedulerProvider;
 
-    public EntriesViewModelFactory(EntryRepositoryInt repository,
+    private RemoteEntryDAOInt remoteEntryDAO;
+
+    public EntriesViewModelFactory(EntryRepositoryInt repository, RemoteEntryDAOInt remoteEntryDAO,
             BaseSchedulerProvider schedulerProvider) {
         this.repository = repository;
+        this.remoteEntryDAO = remoteEntryDAO;
         this.schedulerProvider = schedulerProvider;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new EntriesViewModel(repository, schedulerProvider);
+        return (T) new EntriesViewModel(repository, remoteEntryDAO, schedulerProvider);
     }
 }

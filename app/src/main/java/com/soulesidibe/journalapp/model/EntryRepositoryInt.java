@@ -18,4 +18,6 @@ public interface EntryRepositoryInt {
 
     Completable saveEntry(Entry entry);
 
+    void sync(List<Entry> entries);
+
 }

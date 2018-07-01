@@ -22,6 +22,9 @@ public interface EntryDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(Entry entry);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void bulkSave(List<Entry> entries);
+
     @Query("SELECT * FROM entry")
     Flowable<List<Entry>> get();
 }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "427397649267-qv8c03sfdhnqofafjdanf8ecg84a7ane.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.soulesidibe.journalapp",
+            "certificate_hash": "e6b0a48f9a9a3d12022f6567386b5b0244a281b4"
+          }
+        },
+        {
           "client_id": "427397649267-9vph9kbl3ghnekckuk1qrcfq0q48avtl.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427397649267-9vph9kbl3ghnekckuk1qrcfq0q48avtl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
