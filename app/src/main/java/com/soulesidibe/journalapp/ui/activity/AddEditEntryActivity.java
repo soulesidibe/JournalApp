@@ -70,6 +70,9 @@ public class AddEditEntryActivity extends AppCompatActivity {
             showEntry();
             entry = new Entry(intent.getStringExtra("entry_title"),
                     intent.getStringExtra("entry_content"), intent.getLongExtra("entry_date", 0));
+            if (intent.hasExtra("entry_key")) {
+                entry.setKey(intent.getStringExtra("entry_key"));
+            }
             tvTitle.setText(entry.getTitle());
             tvContent.setText(entry.getContent());
         }
@@ -106,6 +109,7 @@ public class AddEditEntryActivity extends AppCompatActivity {
             viewModel.addEntry(entry);
         } else {
             Entry entry = new Entry(title, content, this.entry.getDate());
+            entry.setKey(this.entry.getKey());
             viewModel.addEntry(entry);
         }
     }

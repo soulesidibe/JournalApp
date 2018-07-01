@@ -13,7 +13,7 @@ import io.reactivex.Single;
 
 public interface RemoteEntryDAOInt {
 
-    void push(Entry entry);
+    String push(Entry entry);
 
     void bulkPush(List<Entry> entries);
 

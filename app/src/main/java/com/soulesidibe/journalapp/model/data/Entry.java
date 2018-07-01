@@ -24,6 +24,8 @@ public class Entry {
 
     private String content;
 
+    private String key;
+
     @PrimaryKey
     private long date;
 
@@ -58,6 +60,14 @@ public class Entry {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Map<String, Object> toMap() {

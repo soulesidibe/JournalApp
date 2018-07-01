@@ -4,12 +4,15 @@ import com.soulesidibe.journalapp.model.data.Entry;
 import com.soulesidibe.journalapp.model.db.EntryDAO;
 import com.soulesidibe.journalapp.scheduler.BaseSchedulerProvider;
 
+import android.arch.core.util.Function;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
+
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
-import io.reactivex.Observable;
 
 /**
  * Created on 6/27/18 at 11:35 AM
@@ -32,8 +35,13 @@ public class EntryRepository implements EntryRepositoryInt {
     }
 
     @Override
-    public Observable<List<Entry>> getEntries() {
-        return localEntryDAO.get().toObservable();
+    public LiveData<List<Entry>> getEntries() {
+        return Transformations.map(localEntryDAO.get(), new Function<List<Entry>, List<Entry>>() {
+            @Override
+            public List<Entry> apply(List<Entry> input) {
+                return input;
+            }
+        });
     }
 
     @Override
@@ -41,8 +49,9 @@ public class EntryRepository implements EntryRepositoryInt {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter emitter) throws Exception {
+                String key = remoteEntryDAO.push(entry);
+                entry.setKey(key);
                 localEntryDAO.save(entry);
-                remoteEntryDAO.push(entry);
             }
         });
     }

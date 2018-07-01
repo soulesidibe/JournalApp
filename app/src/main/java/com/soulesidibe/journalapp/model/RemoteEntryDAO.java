@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.soulesidibe.journalapp.model.data.Entry;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,15 +39,21 @@ public class RemoteEntryDAO implements RemoteEntryDAOInt {
 
 
     @Override
-    public void push(Entry entry) {
+    public String push(Entry entry) {
         DatabaseReference reference = database.getReference(preferences.getUserId());
-        String key = reference.child(preferences.getUserId()).push().getKey();
+        String key;
+        if (TextUtils.isEmpty(entry.getKey())) {
+            key = reference.child(preferences.getUserId()).push().getKey();
+        } else {
+            key = entry.getKey();
+        }
 
         Map<String, Object> entryMap = entry.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(key, entryMap);
         reference.updateChildren(childUpdates);
+        return key;
     }
 
     @Override
@@ -76,6 +83,7 @@ public class RemoteEntryDAO implements RemoteEntryDAOInt {
                             Entry entry = snapshot.getValue(Entry.class);
                             if (entry != null && entry.getContent() != null
                                     && entry.getTitle() != null && entry.getDate() != 0) {
+                                entry.setKey(snapshot.getKey());
                                 entries.add(entry);
                             }
                         }

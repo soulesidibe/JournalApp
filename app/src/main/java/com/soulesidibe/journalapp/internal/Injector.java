@@ -2,6 +2,7 @@ package com.soulesidibe.journalapp.internal;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.soulesidibe.journalapp.App;
 import com.soulesidibe.journalapp.model.EntryRepository;
 import com.soulesidibe.journalapp.model.EntryRepositoryInt;
 import com.soulesidibe.journalapp.model.RemoteEntryDAO;
@@ -40,20 +41,20 @@ public class Injector {
         return new UserPreferences(context);
     }
 
-    public static EntryRepositoryInt providesRepository(Context context) {
-        return new EntryRepository(providesEntryDAO(context), providesRemoteEntry(context),
+    private static EntryRepositoryInt providesRepository(Context context) {
+        return new EntryRepository(providesEntryDAO(), providesRemoteEntry(context),
                 providesScheduler());
     }
 
-    public static RemoteEntryDAOInt providesRemoteEntry(Context context) {
+    private static RemoteEntryDAOInt providesRemoteEntry(Context context) {
         return new RemoteEntryDAO(FirebaseDatabase.getInstance(), providesPreferences(context));
     }
 
-    public static EntryDAO providesEntryDAO(Context context) {
-        return providesDB(context).getEntryDAO();
+    private static EntryDAO providesEntryDAO() {
+        return App.appDB.getEntryDAO();
     }
 
-    public static BaseSchedulerProvider providesScheduler() {
+    private static BaseSchedulerProvider providesScheduler() {
         return AndroidScheduler.getInstance();
     }
 

@@ -31,7 +31,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,6 +71,7 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     private FirebaseUser currentUser;
 
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,27 +94,6 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
             }
         });
 
-        viewModel.getEntriesLiveData().observe(this, new Observer<Resource<List<Entry>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Entry>> listResource) {
-                if (!isLoggedIn) {
-                    showConnect();
-                    return;
-                }
-                if (listResource == null) {
-                    showEmpty();
-                    return;
-                }
-                Resource.ResourceState state = listResource.getState();
-                if (state == Resource.ResourceState.SUCCESS) {
-                    handleData(listResource.getData());
-                } else if (state == Resource.ResourceState.LOADING) {
-                    showLoading();
-                } else if (state == Resource.ResourceState.ERROR) {
-                    showEmpty();
-                }
-            }
-        });
 
         if (!userPreferences.isLoggedIn()) {
             isLoggedIn = false;
@@ -141,20 +121,21 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
                 userPreferences.setUserId(currentUser.getUid());
             }
         }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.clear();
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("ListEntries", "firebaseAuthWithGoogle:" + acct.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("ListEntries", "signInWithCredential:success");
                             currentUser = mAuth.getCurrentUser();
                             userPreferences.setLoggedIn(true);
                             userPreferences.setUserId(currentUser.getUid());
@@ -162,8 +143,6 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
                             viewModel.sync();
                             showEmpty();
                         } else {
-                            Log.w("ListEntries", "signInWithCredential:failure",
-                                    task.getException());
                             Toast.makeText(ListEntriesActivity.this,
                                     "Connexion with google failed. Try again", Toast.LENGTH_SHORT)
                                     .show();
@@ -176,11 +155,35 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        if (userPreferences.isLoggedIn() || currentUser != null) {
-            viewModel.getEntries();
-        } else {
+        if (!userPreferences.isLoggedIn() && currentUser == null) {
             showConnect();
+            return;
         }
+        getData();
+    }
+
+    private void getData() {
+        viewModel.getEntriesLiveData().observe(this, new Observer<Resource<List<Entry>>>() {
+            @Override
+            public void onChanged(@Nullable Resource<List<Entry>> listResource) {
+                if (!isLoggedIn) {
+                    showConnect();
+                    return;
+                }
+                if (listResource == null) {
+                    showEmpty();
+                    return;
+                }
+                Resource.ResourceState state = listResource.getState();
+                if (state == Resource.ResourceState.SUCCESS) {
+                    handleData(listResource.getData());
+                } else if (state == Resource.ResourceState.LOADING) {
+                    showLoading();
+                } else if (state == Resource.ResourceState.ERROR) {
+                    showEmpty();
+                }
+            }
+        });
     }
 
     @Override
@@ -192,10 +195,7 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w("ListEntries", "Google sign in failed", e);
-                // ...
+            } catch (ApiException ignored) {
             }
         }
     }
@@ -205,6 +205,8 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
             entries.addAll(data);
             initRecyclerView();
         } else {
+            entries.clear();
+            entries.addAll(data);
             updateRecyclerView(data);
         }
         showEntries();
@@ -212,6 +214,7 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
 
     private void updateRecyclerView(List<Entry> data) {
         adapter.update(data);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -221,6 +224,9 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
         intent.putExtra("entry_title", entry.getTitle());
         intent.putExtra("entry_content", entry.getContent());
         intent.putExtra("entry_date", entry.getDate());
+        if (!TextUtils.isEmpty(entry.getKey())) {
+            intent.putExtra("entry_key", entry.getKey());
+        }
         startActivity(intent);
     }
 

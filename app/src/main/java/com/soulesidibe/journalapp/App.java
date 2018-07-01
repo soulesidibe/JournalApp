@@ -1,5 +1,8 @@
 package com.soulesidibe.journalapp;
 
+import com.soulesidibe.journalapp.internal.Injector;
+import com.soulesidibe.journalapp.model.db.AppDB;
+
 import android.app.Application;
 
 /**
@@ -9,8 +12,11 @@ import android.app.Application;
 
 public class App extends Application {
 
+    public static AppDB appDB;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        appDB = Injector.providesDB(this);
     }
 }
