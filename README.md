@@ -15,10 +15,6 @@ For this challenge, I use architecture component. ViewModel, Room.
 ViewModel on the presentation layer and Room for local storage.
 We also use Firebase for authentication and synchronizing date to RealTime Database 
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
 ## Authors
 
 * **Souleymane Sidibe** 
