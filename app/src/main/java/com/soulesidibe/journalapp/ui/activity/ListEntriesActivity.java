@@ -44,31 +44,31 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
 
     private static final int RC_SIGN_IN = 12000;
 
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
 
-    private FloatingActionButton add;
+    private FloatingActionButton mAdd;
 
-    private TextView noEntryTv;
+    private TextView mTextViewNoEntryTv;
 
-    private TextView notLoggedInTv;
+    private TextView mTextViewNotLoggedInTv;
 
-    private SignInButton connectBtn;
+    private SignInButton mBtnConnect;
 
-    private ProgressBar loading;
+    private ProgressBar mProgressbarLoading;
 
-    private UserPreferencesInt userPreferences;
+    private UserPreferencesInt mUserPreferences;
 
-    private EntriesViewModel viewModel;
+    private EntriesViewModel mViewModel;
 
-    private EntryAdapter adapter;
+    private EntryAdapter mAdapter;
 
-    private List<Entry> entries = new ArrayList<>();
+    private List<Entry> mEntries = new ArrayList<>();
 
-    private boolean isLoggedIn = false;
+    private boolean mIsLoggedIn = false;
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    private FirebaseUser currentUser;
+    private FirebaseUser mCurrentUser;
 
     private FirebaseAuth mAuth;
 
@@ -77,29 +77,28 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userPreferences = Injector.providesPreferences(this);
-        viewModel = Injector.providesEntriesViewModel(this);
+        mUserPreferences = Injector.providesPreferences(this);
+        mViewModel = Injector.providesEntriesViewModel(this);
 
-        recyclerView = findViewById(R.id.id_list_entries_rv_list);
-        add = findViewById(R.id.id_list_entries_fab_add);
-        noEntryTv = findViewById(R.id.id_list_entries_tv_no_entry);
-        notLoggedInTv = findViewById(R.id.id_list_entries_tv_not_loggedin);
-        connectBtn = findViewById(R.id.id_list_entries_btn_connect);
-        loading = findViewById(R.id.id_list_entries_pb_loader);
+        mRecyclerView = findViewById(R.id.id_list_entries_rv_list);
+        mAdd = findViewById(R.id.id_list_entries_fab_add);
+        mTextViewNoEntryTv = findViewById(R.id.id_list_entries_tv_no_entry);
+        mTextViewNotLoggedInTv = findViewById(R.id.id_list_entries_tv_not_loggedin);
+        mBtnConnect = findViewById(R.id.id_list_entries_btn_connect);
+        mProgressbarLoading = findViewById(R.id.id_list_entries_pb_loader);
 
-        connectBtn.setOnClickListener(new View.OnClickListener() {
+        mBtnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 connectGoogle();
             }
         });
 
-
-        if (!userPreferences.isLoggedIn()) {
-            isLoggedIn = false;
+        if (!mUserPreferences.isLoggedIn()) {
+            mIsLoggedIn = false;
             showConnect();
         } else {
-            isLoggedIn = true;
+            mIsLoggedIn = true;
         }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
@@ -114,11 +113,11 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     @Override
     protected void onStart() {
         super.onStart();
-        if (!userPreferences.isLoggedIn()) {
-            currentUser = mAuth.getCurrentUser();
-            if (currentUser != null) {
-                userPreferences.setLoggedIn(true);
-                userPreferences.setUserId(currentUser.getUid());
+        if (!mUserPreferences.isLoggedIn()) {
+            mCurrentUser = mAuth.getCurrentUser();
+            if (mCurrentUser != null) {
+                mUserPreferences.setLoggedIn(true);
+                mUserPreferences.setUserId(mCurrentUser.getUid());
             }
         }
     }
@@ -126,7 +125,7 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        viewModel.clear();
+        mViewModel.clear();
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -136,11 +135,11 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            userPreferences.setLoggedIn(true);
-                            userPreferences.setUserId(currentUser.getUid());
-                            isLoggedIn = true;
-                            viewModel.sync();
+                            mCurrentUser = mAuth.getCurrentUser();
+                            mUserPreferences.setLoggedIn(true);
+                            mUserPreferences.setUserId(mCurrentUser.getUid());
+                            mIsLoggedIn = true;
+                            mViewModel.sync();
                             showEmpty();
                         } else {
                             Toast.makeText(ListEntriesActivity.this,
@@ -155,7 +154,7 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        if (!userPreferences.isLoggedIn() && currentUser == null) {
+        if (!mUserPreferences.isLoggedIn() && mCurrentUser == null) {
             showConnect();
             return;
         }
@@ -163,10 +162,10 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     }
 
     private void getData() {
-        viewModel.getEntriesLiveData().observe(this, new Observer<Resource<List<Entry>>>() {
+        mViewModel.getEntriesLiveData().observe(this, new Observer<Resource<List<Entry>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Entry>> listResource) {
-                if (!isLoggedIn) {
+                if (!mIsLoggedIn) {
                     showConnect();
                     return;
                 }
@@ -201,20 +200,20 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     }
 
     private void handleData(List<Entry> data) {
-        if (entries.isEmpty()) {
-            entries.addAll(data);
+        if (mEntries.isEmpty()) {
+            mEntries.addAll(data);
             initRecyclerView();
         } else {
-            entries.clear();
-            entries.addAll(data);
+            mEntries.clear();
+            mEntries.addAll(data);
             updateRecyclerView(data);
         }
         showEntries();
     }
 
     private void updateRecyclerView(List<Entry> data) {
-        adapter.update(data);
-        adapter.notifyDataSetChanged();
+        mAdapter.update(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -231,55 +230,55 @@ public class ListEntriesActivity extends AppCompatActivity implements EntryAdapt
     }
 
     private void initRecyclerView() {
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
-        adapter = new EntryAdapter(entries, this);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new EntryAdapter(mEntries, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void showLoading() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        add.setVisibility(View.INVISIBLE);
-        noEntryTv.setVisibility(View.INVISIBLE);
-        notLoggedInTv.setVisibility(View.INVISIBLE);
-        connectBtn.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mAdd.setVisibility(View.INVISIBLE);
+        mTextViewNoEntryTv.setVisibility(View.INVISIBLE);
+        mTextViewNotLoggedInTv.setVisibility(View.INVISIBLE);
+        mBtnConnect.setVisibility(View.INVISIBLE);
+        mProgressbarLoading.setVisibility(View.VISIBLE);
     }
 
     private void showEntries() {
-        recyclerView.setVisibility(View.VISIBLE);
-        add.setVisibility(View.VISIBLE);
-        noEntryTv.setVisibility(View.INVISIBLE);
-        notLoggedInTv.setVisibility(View.INVISIBLE);
-        connectBtn.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mAdd.setVisibility(View.VISIBLE);
+        mTextViewNoEntryTv.setVisibility(View.INVISIBLE);
+        mTextViewNotLoggedInTv.setVisibility(View.INVISIBLE);
+        mBtnConnect.setVisibility(View.INVISIBLE);
+        mProgressbarLoading.setVisibility(View.INVISIBLE);
     }
 
     private void showEmpty() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        add.setVisibility(View.VISIBLE);
-        noEntryTv.setVisibility(View.VISIBLE);
-        notLoggedInTv.setVisibility(View.INVISIBLE);
-        connectBtn.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mAdd.setVisibility(View.VISIBLE);
+        mTextViewNoEntryTv.setVisibility(View.VISIBLE);
+        mTextViewNotLoggedInTv.setVisibility(View.INVISIBLE);
+        mBtnConnect.setVisibility(View.INVISIBLE);
+        mProgressbarLoading.setVisibility(View.INVISIBLE);
     }
 
     private void showConnect() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        add.setVisibility(View.INVISIBLE);
-        noEntryTv.setVisibility(View.INVISIBLE);
-        notLoggedInTv.setVisibility(View.VISIBLE);
-        connectBtn.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mAdd.setVisibility(View.INVISIBLE);
+        mTextViewNoEntryTv.setVisibility(View.INVISIBLE);
+        mTextViewNotLoggedInTv.setVisibility(View.VISIBLE);
+        mBtnConnect.setVisibility(View.VISIBLE);
+        mProgressbarLoading.setVisibility(View.INVISIBLE);
     }
 
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.id_list_entries_fab_add) {
             Intent intent = new Intent(this, AddEditEntryActivity.class);
-            intent.putExtra("action", "add");
+            intent.putExtra("action", "mAdd");
             startActivity(intent);
         }
     }

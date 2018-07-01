@@ -20,26 +20,26 @@ import io.reactivex.disposables.Disposable;
 
 public class AddEditViewModel extends ViewModel {
 
-    private EntryRepositoryInt repository;
+    private EntryRepositoryInt mRepository;
 
-    private BaseSchedulerProvider baseScheduler;
+    private BaseSchedulerProvider mBaseScheduler;
 
-    private MutableLiveData<Resource<List<Entry>>> entriesLiveData = new MutableLiveData<>();
+    private MutableLiveData<Resource<List<Entry>>> mEntriesLiveData = new MutableLiveData<>();
 
-    private CompositeDisposable disposables = new CompositeDisposable();
+    private CompositeDisposable mDisposables = new CompositeDisposable();
 
     public AddEditViewModel(EntryRepositoryInt repository, BaseSchedulerProvider baseScheduler) {
-        this.repository = repository;
-        this.baseScheduler = baseScheduler;
+        this.mRepository = repository;
+        this.mBaseScheduler = baseScheduler;
     }
 
     public void addEntry(Entry entry) {
-        entriesLiveData.setValue(Resource.onLoading());
-        Disposable disposable = repository.saveEntry(entry)
-                .observeOn(baseScheduler.ui())
-                .subscribeOn(baseScheduler.io())
+        mEntriesLiveData.setValue(Resource.onLoading());
+        Disposable disposable = mRepository.saveEntry(entry)
+                .observeOn(mBaseScheduler.ui())
+                .subscribeOn(mBaseScheduler.io())
                 .subscribe();
-        disposables.add(disposable);
+        mDisposables.add(disposable);
     }
 
 }

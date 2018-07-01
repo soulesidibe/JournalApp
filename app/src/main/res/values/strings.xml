@@ -3,6 +3,8 @@
     <string name="str_no_entry">No Entry found.</string>
     <string name="str_not_loggedin">You are not logged in.</string>
     <string name="str_connect_google">Connect with Google</string>
-    <string name="str_hint_add_edit_content">Start typing...</string>
+    <string name="str_hint_add_edit_content">Start typing…</string>
     <string name="str_hint_add_edit_title">Title</string>
+    <string name="str_title_list_entries">Your Diary</string>
+    <string name="str_title_list_entries_add">Add new entry</string>
 </resources>

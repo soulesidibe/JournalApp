@@ -51,7 +51,7 @@ public class Injector {
     }
 
     private static EntryDAO providesEntryDAO() {
-        return App.appDB.getEntryDAO();
+        return App.sAppDB.getEntryDAO();
     }
 
     private static BaseSchedulerProvider providesScheduler() {

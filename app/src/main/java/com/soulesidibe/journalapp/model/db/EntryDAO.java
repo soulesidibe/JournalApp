@@ -24,6 +24,6 @@ public interface EntryDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void bulkSave(List<Entry> entries);
 
-    @Query("SELECT * FROM entry")
+    @Query("SELECT * FROM entry order by mDate desc")
     LiveData<List<Entry>> get();
 }

@@ -14,76 +14,76 @@ import java.util.Map;
 @Entity
 public class Entry {
 
-    public static final String ENTRY_TITLE = "title";
+    public static final String ENTRY_TITLE = "mTitle";
 
-    public static final String ENTRY_CONTENT = "content";
+    public static final String ENTRY_CONTENT = "mContent";
 
-    public static final String ENTRY_DATE = "date";
+    public static final String ENTRY_DATE = "mDate";
 
-    private String title;
+    private String mTitle;
 
-    private String content;
+    private String mContent;
 
-    private String key;
+    private String mKey;
 
     @PrimaryKey
-    private long date;
+    private long mDate;
 
     public Entry(String title, String content, long date) {
-        this.title = title;
-        this.content = content;
-        this.date = date;
+        this.mTitle = title;
+        this.mContent = content;
+        this.mDate = date;
     }
 
     public Entry() {
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.mTitle = title;
     }
 
     public String getContent() {
-        return content;
+        return mContent;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.mContent = content;
     }
 
     public long getDate() {
-        return date;
+        return mDate;
     }
 
     public void setDate(long date) {
-        this.date = date;
+        this.mDate = date;
     }
 
     public String getKey() {
-        return key;
+        return mKey;
     }
 
     public void setKey(String key) {
-        this.key = key;
+        this.mKey = key;
     }
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put(ENTRY_TITLE, title);
-        map.put(ENTRY_CONTENT, content);
-        map.put(ENTRY_DATE, date);
+        map.put(ENTRY_TITLE, mTitle);
+        map.put(ENTRY_CONTENT, mContent);
+        map.put(ENTRY_DATE, mDate);
         return map;
     }
 
     @Override
     public String toString() {
         return "Entry{" +
-                "title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", date=" + date +
+                "title='" + mTitle + '\'' +
+                ", content='" + mContent + '\'' +
+                ", date=" + mDate +
                 '}';
     }
 }

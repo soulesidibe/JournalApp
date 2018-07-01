@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,13 +21,13 @@ import java.util.List;
 
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHolder> {
 
-    private final List<Entry> entries;
+    private final List<Entry> mEntries;
 
-    private final OnItemClick listener;
+    private final OnItemClick mListener;
 
     public EntryAdapter(List<Entry> entries, OnItemClick listener) {
-        this.entries = entries;
-        this.listener = listener;
+        this.mEntries = entries;
+        this.mListener = listener;
     }
 
     @NonNull
@@ -38,21 +40,25 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
     }
 
     public void update(List<Entry> data) {
-        entries.clear();
-        entries.addAll(data);
+        mEntries.clear();
+        mEntries.addAll(data);
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
-        Entry entry = entries.get(position);
+        Entry entry = mEntries.get(position);
         holder.title.setText(entry.getTitle());
-        holder.date.setText("" + entry.getDate());
+        holder.description.setText(entry.getContent());
+        Date date = new Date(entry.getDate());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        holder.date.setText(simpleDateFormat.format(date));
     }
 
     @Override
     public int getItemCount() {
-        return entries.size();
+        return mEntries.size();
     }
 
     public interface OnItemClick {
@@ -67,16 +73,19 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
 
         TextView date;
 
+        TextView description;
+
         public EntryViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.id_item_entry_title);
             date = itemView.findViewById(R.id.id_item_entry_date);
+            description = itemView.findViewById(R.id.id_item_entry_description);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Entry entry = entries.get(getAdapterPosition());
-                    listener.onclick(entry);
+                    Entry entry = mEntries.get(getAdapterPosition());
+                    mListener.onclick(entry);
                 }
             });
         }

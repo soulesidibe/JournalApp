@@ -15,6 +15,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName =
+                        "$applicationName-${variant.buildType.name}-${defaultConfig.versionName}.apk"
+            }
+        }
     }
 
     signingConfigs {
@@ -48,8 +55,8 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation "android.arch.persistence.room:rxjava2:$room_version"
 
-    def paging_version = "1.0.0"
-    implementation "android.arch.paging:runtime:$paging_version"
+//    def paging_version = "1.0.0"
+//    implementation "android.arch.paging:runtime:$paging_version"
 
     implementation "io.reactivex.rxjava2:rxjava:2.1.12"
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"

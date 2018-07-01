@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
     android:minHeight="?listPreferredItemHeight">
 
     <TextView
         android:id="@+id/id_item_entry_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:maxEms="10"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintEnd_toStartOf="@+id/id_item_entry_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="New Diary New Diary New Diary" />
 
     <TextView
         android:id="@+id/id_item_entry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBaseline_toBaselineOf="@+id/id_item_entry_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="01/07/2018" />
+
+    <TextView
+        android:id="@+id/id_item_entry_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/id_item_entry_title" />
+        app:layout_constraintTop_toBottomOf="@+id/id_item_entry_title"
+        tools:text="Je suis ici et la. Je suis ici et la. Je suis ici et la" />
 </android.support.constraint.ConstraintLayout>

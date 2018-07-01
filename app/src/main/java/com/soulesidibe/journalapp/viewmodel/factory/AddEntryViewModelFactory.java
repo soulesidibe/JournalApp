@@ -15,19 +15,19 @@ import android.support.annotation.NonNull;
 
 public class AddEntryViewModelFactory implements ViewModelProvider.Factory {
 
-    private final EntryRepositoryInt repository;
+    private final EntryRepositoryInt mRepository;
 
-    private final BaseSchedulerProvider schedulerProvider;
+    private final BaseSchedulerProvider mSchedulerProvider;
 
     public AddEntryViewModelFactory(EntryRepositoryInt repository,
             BaseSchedulerProvider schedulerProvider) {
-        this.repository = repository;
-        this.schedulerProvider = schedulerProvider;
+        this.mRepository = repository;
+        this.mSchedulerProvider = schedulerProvider;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new AddEditViewModel(repository, schedulerProvider);
+        return (T) new AddEditViewModel(mRepository, mSchedulerProvider);
     }
 }

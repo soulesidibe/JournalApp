@@ -16,22 +16,22 @@ import android.support.annotation.NonNull;
 
 public class EntriesViewModelFactory implements ViewModelProvider.Factory {
 
-    private final EntryRepositoryInt repository;
+    private final EntryRepositoryInt mRepository;
 
-    private final BaseSchedulerProvider schedulerProvider;
+    private final BaseSchedulerProvider mSchedulerProvider;
 
-    private RemoteEntryDAOInt remoteEntryDAO;
+    private RemoteEntryDAOInt mRemoteEntryDAO;
 
     public EntriesViewModelFactory(EntryRepositoryInt repository, RemoteEntryDAOInt remoteEntryDAO,
             BaseSchedulerProvider schedulerProvider) {
-        this.repository = repository;
-        this.remoteEntryDAO = remoteEntryDAO;
-        this.schedulerProvider = schedulerProvider;
+        this.mRepository = repository;
+        this.mRemoteEntryDAO = remoteEntryDAO;
+        this.mSchedulerProvider = schedulerProvider;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new EntriesViewModel(repository, remoteEntryDAO, schedulerProvider);
+        return (T) new EntriesViewModel(mRepository, mRemoteEntryDAO, mSchedulerProvider);
     }
 }

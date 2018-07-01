@@ -27,23 +27,23 @@ import io.reactivex.SingleOnSubscribe;
 
 public class RemoteEntryDAO implements RemoteEntryDAOInt {
 
-    private final FirebaseDatabase database;
+    private final FirebaseDatabase mDatabase;
 
-    private final UserPreferencesInt preferences;
+    private final UserPreferencesInt mPreferences;
 
-    public RemoteEntryDAO(FirebaseDatabase database,
-            UserPreferencesInt preferences) {
-        this.database = database;
-        this.preferences = preferences;
+    public RemoteEntryDAO(FirebaseDatabase mDatabase,
+            UserPreferencesInt mPreferences) {
+        this.mDatabase = mDatabase;
+        this.mPreferences = mPreferences;
     }
 
 
     @Override
     public String push(Entry entry) {
-        DatabaseReference reference = database.getReference(preferences.getUserId());
+        DatabaseReference reference = mDatabase.getReference(mPreferences.getUserId());
         String key;
         if (TextUtils.isEmpty(entry.getKey())) {
-            key = reference.child(preferences.getUserId()).push().getKey();
+            key = reference.child(mPreferences.getUserId()).push().getKey();
         } else {
             key = entry.getKey();
         }
@@ -58,10 +58,10 @@ public class RemoteEntryDAO implements RemoteEntryDAOInt {
 
     @Override
     public void bulkPush(List<Entry> entries) {
-        DatabaseReference reference = database.getReference(preferences.getUserId());
+        DatabaseReference reference = mDatabase.getReference(mPreferences.getUserId());
         Map<String, Object> childUpdates = new HashMap<>();
         for (Entry entry : entries) {
-            String key = reference.child(preferences.getUserId()).push().getKey();
+            String key = reference.child(mPreferences.getUserId()).push().getKey();
             Map<String, Object> entryMap = entry.toMap();
             childUpdates.put(key, entryMap);
         }
@@ -74,7 +74,7 @@ public class RemoteEntryDAO implements RemoteEntryDAOInt {
         return Single.create(new SingleOnSubscribe<List<Entry>>() {
             @Override
             public void subscribe(final SingleEmitter<List<Entry>> emitter) throws Exception {
-                DatabaseReference reference = database.getReference(preferences.getUserId());
+                DatabaseReference reference = mDatabase.getReference(mPreferences.getUserId());
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

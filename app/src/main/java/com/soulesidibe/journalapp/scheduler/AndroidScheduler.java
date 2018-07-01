@@ -12,20 +12,20 @@ import io.reactivex.schedulers.Schedulers;
 public class AndroidScheduler implements BaseSchedulerProvider {
 
 
-    private static volatile AndroidScheduler mInstance;
+    private static volatile AndroidScheduler sInstance;
 
     private AndroidScheduler() {
     }
 
     public static AndroidScheduler getInstance() {
-        if (mInstance == null) {
+        if (sInstance == null) {
             synchronized (AndroidScheduler.class) {
-                if (mInstance == null) {
-                    mInstance = new AndroidScheduler();
+                if (sInstance == null) {
+                    sInstance = new AndroidScheduler();
                 }
             }
         }
-        return mInstance;
+        return sInstance;
     }
 
     @Override

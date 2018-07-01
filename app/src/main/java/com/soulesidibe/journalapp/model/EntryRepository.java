@@ -21,22 +21,22 @@ import io.reactivex.CompletableOnSubscribe;
 
 public class EntryRepository implements EntryRepositoryInt {
 
-    private final EntryDAO localEntryDAO;
+    private final EntryDAO mLocalEntryDAO;
 
-    private final RemoteEntryDAOInt remoteEntryDAO;
+    private final RemoteEntryDAOInt mRemoteEntryDAO;
 
-    private BaseSchedulerProvider schedulerProvider;
+    private BaseSchedulerProvider mSchedulerProvider;
 
     public EntryRepository(EntryDAO entryDAO,
-            RemoteEntryDAOInt remoteEntryDAO, BaseSchedulerProvider schedulerProvider) {
-        this.localEntryDAO = entryDAO;
-        this.remoteEntryDAO = remoteEntryDAO;
-        this.schedulerProvider = schedulerProvider;
+            RemoteEntryDAOInt mRemoteEntryDAO, BaseSchedulerProvider mSchedulerProvider) {
+        this.mLocalEntryDAO = entryDAO;
+        this.mRemoteEntryDAO = mRemoteEntryDAO;
+        this.mSchedulerProvider = mSchedulerProvider;
     }
 
     @Override
     public LiveData<List<Entry>> getEntries() {
-        return Transformations.map(localEntryDAO.get(), new Function<List<Entry>, List<Entry>>() {
+        return Transformations.map(mLocalEntryDAO.get(), new Function<List<Entry>, List<Entry>>() {
             @Override
             public List<Entry> apply(List<Entry> input) {
                 return input;
@@ -49,9 +49,9 @@ public class EntryRepository implements EntryRepositoryInt {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter emitter) throws Exception {
-                String key = remoteEntryDAO.push(entry);
+                String key = mRemoteEntryDAO.push(entry);
                 entry.setKey(key);
-                localEntryDAO.save(entry);
+                mLocalEntryDAO.save(entry);
             }
         });
     }
@@ -61,10 +61,10 @@ public class EntryRepository implements EntryRepositoryInt {
         Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter emitter) throws Exception {
-                localEntryDAO.bulkSave(entries);
+                mLocalEntryDAO.bulkSave(entries);
             }
-        }).observeOn(schedulerProvider.ui())
-                .subscribeOn(schedulerProvider.io())
+        }).observeOn(mSchedulerProvider.ui())
+                .subscribeOn(mSchedulerProvider.io())
                 .subscribe();
     }
 }

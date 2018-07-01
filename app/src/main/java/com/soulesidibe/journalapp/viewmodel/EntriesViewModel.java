@@ -14,6 +14,7 @@ import android.arch.lifecycle.ViewModel;
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 import static com.soulesidibe.journalapp.model.data.Resource.ResourceState.ERROR;
@@ -26,25 +27,25 @@ import static com.soulesidibe.journalapp.model.data.Resource.ResourceState.SUCCE
 
 public class EntriesViewModel extends ViewModel {
 
-    private EntryRepositoryInt repository;
+    private EntryRepositoryInt mRepository;
 
-    private RemoteEntryDAOInt remoteEntryDAO;
+    private RemoteEntryDAOInt mRemoteEntryDAO;
 
-    private BaseSchedulerProvider baseScheduler;
+    private BaseSchedulerProvider mBaseScheduler;
 
-    private CompositeDisposable disposables = new CompositeDisposable();
+    private CompositeDisposable mDisposables = new CompositeDisposable();
 
     public EntriesViewModel(EntryRepositoryInt repository, RemoteEntryDAOInt remoteEntryDAO,
             BaseSchedulerProvider baseScheduler) {
-        this.repository = repository;
-        this.remoteEntryDAO = remoteEntryDAO;
-        this.baseScheduler = baseScheduler;
+        this.mRepository = repository;
+        this.mRemoteEntryDAO = remoteEntryDAO;
+        this.mBaseScheduler = baseScheduler;
 
     }
 
     public LiveData<Resource<List<Entry>>> getEntriesLiveData() {
         return Transformations
-                .map(repository.getEntries(), new Function<List<Entry>, Resource<List<Entry>>>() {
+                .map(mRepository.getEntries(), new Function<List<Entry>, Resource<List<Entry>>>() {
                     @Override
                     public Resource<List<Entry>> apply(List<Entry> entries) {
                         if (entries == null || entries.isEmpty()) {
@@ -57,13 +58,13 @@ public class EntriesViewModel extends ViewModel {
     }
 
     public void sync() {
-        remoteEntryDAO.pull()
-                .observeOn(baseScheduler.ui())
-                .subscribeOn(baseScheduler.io())
+        Disposable subscribe = mRemoteEntryDAO.pull()
+                .observeOn(mBaseScheduler.ui())
+                .subscribeOn(mBaseScheduler.io())
                 .subscribe(new Consumer<List<Entry>>() {
                     @Override
                     public void accept(List<Entry> entries) throws Exception {
-                        repository.sync(entries);
+                        mRepository.sync(entries);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -71,10 +72,11 @@ public class EntriesViewModel extends ViewModel {
 
                     }
                 });
+        mDisposables.add(subscribe);
     }
 
     public void clear() {
-        disposables.clear();
+        mDisposables.clear();
     }
 
 }

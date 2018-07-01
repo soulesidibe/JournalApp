@@ -12,11 +12,11 @@ import android.app.Application;
 
 public class App extends Application {
 
-    public static AppDB appDB;
+    public static AppDB sAppDB;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        appDB = Injector.providesDB(this);
+        sAppDB = Injector.providesDB(this);
     }
 }

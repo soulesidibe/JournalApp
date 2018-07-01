@@ -7,16 +7,16 @@ package com.soulesidibe.journalapp.model.data;
 
 public class Resource<T> {
 
-    private ResourceState state;
+    private ResourceState mState;
 
-    private T data;
+    private T mData;
 
-    private String message;
+    private String mMessage;
 
     public Resource(ResourceState state, T data, String message) {
-        this.state = state;
-        this.data = data;
-        this.message = message;
+        this.mState = state;
+        this.mData = data;
+        this.mMessage = message;
     }
 
     public static <T> Resource onSuccess(T data) {
@@ -32,15 +32,15 @@ public class Resource<T> {
     }
 
     public ResourceState getState() {
-        return state;
+        return mState;
     }
 
     public T getData() {
-        return data;
+        return mData;
     }
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
     public enum ResourceState {

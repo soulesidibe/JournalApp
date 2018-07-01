@@ -15,49 +15,49 @@ import android.widget.TextView;
 
 public class AddEditEntryActivity extends AppCompatActivity {
 
-    private final ClockInt clock = Injector.getClock();
+    private final ClockInt mClock = Injector.getClock();
 
-    private EditText title;
+    private EditText mEditTextTitle;
 
-    private EditText content;
+    private EditText mEditTextContent;
 
-    private TextView tvTitle;
+    private TextView mTextViewTitle;
 
-    private TextView tvContent;
+    private TextView mTextViewContent;
 
-    private AddEditViewModel viewModel;
+    private AddEditViewModel mViewModel;
 
-    private Entry entry = null;
+    private Entry mEntry = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_entry);
-        viewModel = Injector.providesAddEntryViewModel(this);
+        mViewModel = Injector.providesAddEntryViewModel(this);
 
-        title = findViewById(R.id.id_add_edit_edt_title);
-        content = findViewById(R.id.id_add_edit_edt_content);
-        tvTitle = findViewById(R.id.id_add_edit_tv_title);
-        tvContent = findViewById(R.id.id_add_edit_tv_content);
+        mEditTextTitle = findViewById(R.id.id_add_edit_edt_title);
+        mEditTextContent = findViewById(R.id.id_add_edit_edt_content);
+        mTextViewTitle = findViewById(R.id.id_add_edit_tv_title);
+        mTextViewContent = findViewById(R.id.id_add_edit_tv_content);
 
-        tvContent.setOnClickListener(new View.OnClickListener() {
+        mTextViewContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showForm();
-                if (entry != null) {
-                    title.setText(entry.getTitle());
-                    content.setText(entry.getContent());
+                if (mEntry != null) {
+                    mEditTextTitle.setText(mEntry.getTitle());
+                    mEditTextContent.setText(mEntry.getContent());
                 }
             }
         });
 
-        tvTitle.setOnClickListener(new View.OnClickListener() {
+        mTextViewTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showForm();
-                if (entry != null) {
-                    title.setText(entry.getTitle());
-                    content.setText(entry.getContent());
+                if (mEntry != null) {
+                    mEditTextTitle.setText(mEntry.getTitle());
+                    mEditTextContent.setText(mEntry.getContent());
                 }
             }
         });
@@ -66,30 +66,33 @@ public class AddEditEntryActivity extends AppCompatActivity {
         String action = intent.getStringExtra("action");
         if (action.equals("add")) {
             showForm();
+            setTitle(R.string.str_title_list_entries_add);
         } else if (action.equals("show")) {
+            String title = intent.getStringExtra("entry_title");
+            setTitle(title);
             showEntry();
-            entry = new Entry(intent.getStringExtra("entry_title"),
+            mEntry = new Entry(title,
                     intent.getStringExtra("entry_content"), intent.getLongExtra("entry_date", 0));
             if (intent.hasExtra("entry_key")) {
-                entry.setKey(intent.getStringExtra("entry_key"));
+                mEntry.setKey(intent.getStringExtra("entry_key"));
             }
-            tvTitle.setText(entry.getTitle());
-            tvContent.setText(entry.getContent());
+            mTextViewTitle.setText(mEntry.getTitle());
+            mTextViewContent.setText(mEntry.getContent());
         }
     }
 
     private void showForm() {
-        title.setVisibility(View.VISIBLE);
-        content.setVisibility(View.VISIBLE);
-        tvTitle.setVisibility(View.INVISIBLE);
-        tvContent.setVisibility(View.INVISIBLE);
+        mEditTextTitle.setVisibility(View.VISIBLE);
+        mEditTextContent.setVisibility(View.VISIBLE);
+        mTextViewTitle.setVisibility(View.INVISIBLE);
+        mTextViewContent.setVisibility(View.INVISIBLE);
     }
 
     private void showEntry() {
-        title.setVisibility(View.INVISIBLE);
-        content.setVisibility(View.INVISIBLE);
-        tvTitle.setVisibility(View.VISIBLE);
-        tvContent.setVisibility(View.VISIBLE);
+        mEditTextTitle.setVisibility(View.INVISIBLE);
+        mEditTextContent.setVisibility(View.INVISIBLE);
+        mTextViewTitle.setVisibility(View.VISIBLE);
+        mTextViewContent.setVisibility(View.VISIBLE);
 
     }
 
@@ -97,20 +100,20 @@ public class AddEditEntryActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        String title = this.title.getText().toString();
-        String content = this.content.getText().toString();
+        String title = this.mEditTextTitle.getText().toString();
+        String content = this.mEditTextContent.getText().toString();
 
         if (title.isEmpty() || content.isEmpty()) {
             return;
         }
 
-        if (this.entry == null) {
-            Entry entry = new Entry(title, content, clock.currentTime());
-            viewModel.addEntry(entry);
+        if (this.mEntry == null) {
+            Entry entry = new Entry(title, content, mClock.currentTime());
+            mViewModel.addEntry(entry);
         } else {
-            Entry entry = new Entry(title, content, this.entry.getDate());
-            entry.setKey(this.entry.getKey());
-            viewModel.addEntry(entry);
+            Entry entry = new Entry(title, content, this.mEntry.getDate());
+            entry.setKey(this.mEntry.getKey());
+            mViewModel.addEntry(entry);
         }
     }
 }
