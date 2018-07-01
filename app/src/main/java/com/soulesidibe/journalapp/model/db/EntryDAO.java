@@ -26,4 +26,7 @@ public interface EntryDAO {
 
     @Query("SELECT * FROM entry order by mDate desc")
     LiveData<List<Entry>> get();
+
+    @Query("DELETE FROM entry")
+    void deleteAll();
 }
